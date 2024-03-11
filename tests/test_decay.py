@@ -9,7 +9,7 @@ except:
     import sys
     sys.path.append("..")
 import unittest
-from mlrose_hiive import GeomDecay, ArithDecay, ExpDecay, CustomSchedule
+from mlrose_hiive import GeomDecay, ArithDecay, ExpDecay, BaseDecaySchedule
 
 
 class TestDecay(unittest.TestCase):
@@ -84,7 +84,7 @@ class TestDecay(unittest.TestCase):
 
         kwargs = {'c': 10}
 
-        schedule = CustomSchedule(custom, **kwargs)
+        schedule = BaseDecaySchedule(custom, **kwargs)
         x = schedule.evaluate(5)
 
         assert x == 15

@@ -24,13 +24,30 @@ Example usage:
 @short_name('mimic')
 class MIMICRunner(_RunnerBase):
 
-    def __init__(self, problem, experiment_name, seed, iteration_list, population_sizes,
-                 keep_percent_list, max_attempts=5, generate_curves=True, use_fast_mimic=True, **kwargs):
-        super().__init__(problem=problem, experiment_name=experiment_name, seed=seed, iteration_list=iteration_list,
-                         max_attempts=max_attempts, generate_curves=generate_curves,
-                         **kwargs)
+    def __init__(self,
+                 problem,
+                 experiment_name,
+                 seed,
+                 iteration_list,
+                 population_sizes=None,
+                 keep_percent_list=None,
+                 noises=None,
+                 max_attempts=5,
+                 generate_curves=True,
+                 use_fast_mimic=False,
+                 **kwargs):
+        super().__init__(
+            problem=problem,
+            experiment_name=experiment_name,
+            seed=seed,
+            iteration_list=iteration_list,
+            max_attempts=max_attempts,
+            generate_curves=generate_curves,
+            **kwargs
+        )
         self.keep_percent_list = keep_percent_list
         self.population_sizes = population_sizes
+        self.noises = noises
         self._use_fast_mimic = None
         if hasattr(problem, 'set_mimic_fast_mode') and callable(getattr(problem, 'set_mimic_fast_mode')):
             self._use_fast_mimic = use_fast_mimic
@@ -42,6 +59,16 @@ class MIMICRunner(_RunnerBase):
             self._log_current_argument('use_fast_mimic', self._use_fast_mimic)
 
     def run(self):
-        return super().run_experiment_(algorithm=mlrose_hiive.mimic,
-                                       pop_size=('Population Size', self.population_sizes),
-                                       keep_pct=('Keep Percent', self.keep_percent_list))
+        args = {
+            'pop_size': ('Population Size', self.population_sizes),
+            'keep_pct': ('Keep Percent', self.keep_percent_list),
+            'noise': ("Noise", self.noises)
+        }
+        forward_args = dict()
+        for k, v in args.items():
+            if v[1] is not None:
+                forward_args[k] = v
+        return super().run_experiment_(
+            algorithm=mlrose_hiive.mimic,
+            **forward_args
+        )

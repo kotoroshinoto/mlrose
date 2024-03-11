@@ -1,12 +1,12 @@
 """ Classes for defining decay schedules for simulated annealing."""
-
+from ._base_decay import BaseDecaySchedule
 # Author: Genevieve Hayes
 # License: BSD 3 clause
 
 import numpy as np
 
 
-class ExpDecay:
+class ExpDecay(BaseDecaySchedule):
     """
     Schedule for exponentially decaying the simulated
     annealing temperature parameter T according to the formula:

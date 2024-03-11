@@ -6,4 +6,4 @@
 from .arith_decay import ArithDecay
 from .geom_decay import GeomDecay
 from .exp_decay import ExpDecay
-from .custom_schedule import CustomSchedule
+from ._base_decay import BaseDecaySchedule

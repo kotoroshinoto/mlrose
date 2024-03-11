@@ -1,6 +1,7 @@
 import mlrose_hiive
 from mlrose_hiive.decorators import short_name
 from mlrose_hiive.runners._runner_base import _RunnerBase
+from mlrose_hiive.algorithms.decay import BaseDecaySchedule
 import numpy as np
 
 """
@@ -30,16 +31,27 @@ Example usage:
 @short_name('sa')
 class SARunner(_RunnerBase):
 
-    def __init__(self, problem, experiment_name, seed, iteration_list, temperature_list, decay_list=None,
+    def __init__(self, problem, experiment_name, seed, iteration_list, temperature_list=(1,), decay_list=None,
                  max_attempts=500, generate_curves=True, **kwargs):
         super().__init__(problem=problem, experiment_name=experiment_name, seed=seed, iteration_list=iteration_list,
                          max_attempts=max_attempts, generate_curves=generate_curves,
                          **kwargs)
         self.use_raw_temp = True
         self.temperature_list = temperature_list
+        if decay_list is None:
+            decay_list = [mlrose_hiive.GeomDecay]
         if all([np.isscalar(x) for x in temperature_list]):
             if decay_list is None:
                 decay_list = [mlrose_hiive.GeomDecay]
+            else:
+                if not (
+                        all([isinstance(x, type) for x in decay_list])
+                        and
+                        all([issubclass(x, BaseDecaySchedule) for x in decay_list])
+                ):
+                    raise ValueError(
+                        "Decay list must be a list of classes/types that are sub-classes of BaseDecaySchedule"
+                    )
             self.decay_list = decay_list
             self.use_raw_temp = False
 

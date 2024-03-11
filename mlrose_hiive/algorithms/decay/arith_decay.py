@@ -1,11 +1,11 @@
 """ Classes for defining decay schedules for simulated annealing."""
-
+from ._base_decay import BaseDecaySchedule
 
 # Author: Genevieve Hayes
 # License: BSD 3 clause
 
 
-class ArithDecay:
+class ArithDecay(BaseDecaySchedule):
     """
     Schedule for arithmetically decaying the simulated
     annealing temperature parameter T according to the formula:

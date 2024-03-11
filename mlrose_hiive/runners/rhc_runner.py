@@ -25,13 +25,35 @@ Example usage:
 @short_name('rhc')
 class RHCRunner(_RunnerBase):
 
-    def __init__(self, problem, experiment_name, seed, iteration_list, restart_list,
-                 max_attempts=500, generate_curves=True, **kwargs):
-        super().__init__(problem=problem, experiment_name=experiment_name, seed=seed, iteration_list=iteration_list,
-                         max_attempts=max_attempts, generate_curves=generate_curves,
-                         **kwargs)
+    def __init__(self,
+                 problem,
+                 experiment_name,
+                 seed,
+                 iteration_list,
+                 restart_list=None,
+                 max_attempts=500,
+                 generate_curves=True,
+                 **kwargs):
+        super().__init__(
+            problem=problem,
+            experiment_name=experiment_name,
+            seed=seed,
+            iteration_list=iteration_list,
+            max_attempts=max_attempts,
+            generate_curves=generate_curves,
+            **kwargs
+        )
         self.restart_list = restart_list
 
     def run(self):
-        return super().run_experiment_(algorithm=mlrose_hiive.random_hill_climb,
-                                       restarts=('Restarts', self.restart_list))
+        args = {
+            'restarts': ('Restarts', self.restart_list)
+        }
+        forward_args = dict()
+        for k, v in args.items():
+            if v[1] is not None:
+                forward_args[k] = v
+        return super().run_experiment_(
+            algorithm=mlrose_hiive.random_hill_climb,
+            **forward_args
+        )

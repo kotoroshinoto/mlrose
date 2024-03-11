@@ -1,8 +1,9 @@
+from ._base_decay import BaseDecaySchedule
 # Author: Genevieve Hayes (modified by Andrew Rollings)
 # License: BSD 3 clause
 
 
-class GeomDecay:
+class GeomDecay(BaseDecaySchedule):
     """
     Schedule for geometrically decaying the simulated
     annealing temperature parameter T according to the formula:

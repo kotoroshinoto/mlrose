@@ -1,10 +1,11 @@
 """ Classes for defining decay schedules for simulated annealing."""
+from abc import ABCMeta
 
 # Author: Genevieve Hayes
 # License: BSD 3 clause
 
 
-class CustomSchedule:
+class BaseDecaySchedule(metaclass=ABCMeta):
     """Class for generating your own temperature schedule.
 
     Parameters
@@ -24,7 +25,7 @@ class CustomSchedule:
         >>> import mlrose_hiive
         >>> def custom(t, c): return t + c
         >>> kwargs = {'c': 10}
-        >>> schedule = mlrose_hiive.CustomSchedule(custom, **kwargs)
+        >>> schedule = mlrose_hiive.BaseDecaySchedule(custom, **kwargs)
         >>> schedule.evaluate(5)
         15
     """
