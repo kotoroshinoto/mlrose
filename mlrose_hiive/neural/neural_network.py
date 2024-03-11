@@ -4,6 +4,8 @@
 # License: BSD 3 clause
 
 from sklearn.base import  ClassifierMixin
+from sklearn.preprocessing import OneHotEncoder
+
 
 from mlrose_hiive.algorithms.decay import GeomDecay
 from ._nn_core import _NNCore
@@ -129,4 +131,14 @@ class NeuralNetwork(_NNCore, ClassifierMixin):
             max_attempts=max_attempts,
             random_state=random_state,
             curve=curve)
+        self.classes_ = None
+        self.one_hot_encoder = OneHotEncoder()
 
+    def fit(self, X, y=None, init_weights=None):
+        ohe_y = self.one_hot_encoder.fit_transform(y).toarray()
+        self.classes_ = ohe_y.categories_
+        return super().fit(X=X, y=ohe_y, init_weights=init_weights)
+
+    def predict(self, X):
+        preds = super().predict(X=X)
+        return self.one_hot_encoder.inverse_transform(preds)

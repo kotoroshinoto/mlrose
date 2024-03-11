@@ -156,8 +156,10 @@ class _NNCore(_NNBase):
             fitness_curve, fitted_weights, loss = self._run_with_sa(init_weights, num_nodes, problem)
         elif self.algorithm == 'genetic_alg':
             fitness_curve, fitted_weights, loss = self._run_with_ga(problem)
-        else:  # Gradient descent case
+        elif self.algorithm == 'gradient_descent':
             fitness_curve, fitted_weights, loss = self._run_with_gd(init_weights, num_nodes, problem)
+        else:
+            raise NotImplementedError(f"This class is not designed to handle{self.algorithm}")
 
         # Save fitted weights and node list
         self.node_list = node_list
@@ -286,3 +288,11 @@ class _NNCore(_NNBase):
                                    is_classifier=self.is_classifier)
         self.predicted_probs = pp
         return y_pred
+
+    def predict_proba(self, X):
+        _ = self.predict(X)
+        y_prob_1 = np.array(self.predicted_probs)
+        if y_prob_1.shape[1] > 1:
+            return y_prob_1
+        else:
+            return np.concatenate((1 - y_prob_1, y_prob_1), axis=1)
