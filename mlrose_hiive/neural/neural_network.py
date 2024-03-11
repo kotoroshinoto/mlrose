@@ -142,4 +142,4 @@ class NeuralNetwork(_NNCore, ClassifierMixin):
 
     def predict(self, X):
         preds = super().predict(X=X)
-        return self.one_hot_encoder.inverse_transform(preds.flatten())
+        return self.one_hot_encoder.inverse_transform(preds).flatten()
