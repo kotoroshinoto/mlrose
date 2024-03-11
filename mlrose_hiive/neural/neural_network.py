@@ -2,7 +2,7 @@
 
 # Author: Genevieve Hayes (modified by Andrew Rollings)
 # License: BSD 3 clause
-
+import numpy as np
 from sklearn.base import  ClassifierMixin
 from sklearn.preprocessing import OneHotEncoder
 
@@ -135,10 +135,11 @@ class NeuralNetwork(_NNCore, ClassifierMixin):
         self.one_hot_encoder = OneHotEncoder()
 
     def fit(self, X, y=None, init_weights=None):
-        ohe_y = self.one_hot_encoder.fit_transform(y).toarray()
+        y_arr = np.array(y).reshape(-1, 1)
+        ohe_y = self.one_hot_encoder.fit_transform(y_arr).toarray()
         self.classes_ = ohe_y.categories_
         return super().fit(X=X, y=ohe_y, init_weights=init_weights)
 
     def predict(self, X):
         preds = super().predict(X=X)
-        return self.one_hot_encoder.inverse_transform(preds)
+        return self.one_hot_encoder.inverse_transform(preds.flatten())
